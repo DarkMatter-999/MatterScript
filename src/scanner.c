@@ -1,4 +1,5 @@
 #include "scanner.h"
+#include <stdio.h>
 
 typedef struct
 {
@@ -14,6 +15,7 @@ static char next()
     scanner.current++;
     return scanner.current[-1];
 }
+
 static Token makeToken(TokenType type)
 {
     Token token;
@@ -114,12 +116,12 @@ static bool isAtEnd()
     return *scanner.current == '\0';
 }
 
-char *peek()
+static char peek()
 {
     return *scanner.current;
 }
 
-char *peekNext()
+static char peekNext()
 {
     if (isAtEnd())
         return '\0';
@@ -184,13 +186,16 @@ static Token number()
 {
     while (isDigit(peek()))
         next();
+
     if (peek() == '.' && isDigit(peekNext()))
     {
         next();
+
         while (isDigit(peek()))
             next();
     }
-    return makeToken(identifierType());
+
+    return makeToken(TOKEN_NUMBER);
 }
 
 static Token identifier()

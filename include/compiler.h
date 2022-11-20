@@ -1,6 +1,9 @@
 #if !defined(COMPILER_H)
 #define COMPILER_H
 
-void compile(const char *source);
+#include <stdbool.h>
+#include "bytecode.h"
+
+bool compile(const char *source, Chunk *chunk);
 
 #endif // COMPILER_H

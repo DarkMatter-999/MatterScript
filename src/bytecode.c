@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include "bytecode.h"
 #include "memory.h"
+#include "vm.h"
+#include <stdint.h>
 
 void initChunk(Chunk *chunk)
 {
@@ -17,8 +19,10 @@ void writeChunk(Chunk *chunk, uint8_t byte, int line)
     {
         int oldCapacity = chunk->capacity;
         chunk->capacity = grow_capacity(oldCapacity);
-        chunk->code = (uint8_t *)grow_array(sizeof(uint8_t), chunk->code, oldCapacity, chunk->capacity);
-        chunk->lines = (int *)grow_array(sizeof(int), chunk->lines, oldCapacity, chunk->capacity);
+        chunk->code = (uint8_t *)grow_array(sizeof(uint8_t), chunk->code,
+                                            oldCapacity, chunk->capacity);
+        chunk->lines = (int *)grow_array(sizeof(int), chunk->lines,
+                                         oldCapacity, chunk->capacity);
     }
 
     chunk->code[chunk->count] = byte;

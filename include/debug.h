@@ -6,6 +6,8 @@
 
 #define DEBUG_SCANNER
 
+#define DEBUG_PRINT_CODE
+
 #define DEBUG_TRACE_EXECUTION
 
 void disassembleChunk(Chunk *chunk, const char *name);

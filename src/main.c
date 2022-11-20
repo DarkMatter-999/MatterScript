@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "vm.h"
 #include "bytecode.h"
 
@@ -6,9 +7,6 @@ static void repl()
 {
     char line[1024];
     initVM();
-    Chunk chunk;
-
-    initChunk(&chunk);
 
     while (1)
     {
@@ -21,6 +19,7 @@ static void repl()
 
         interpret(line);
     }
+
     freeVM();
 }
 
