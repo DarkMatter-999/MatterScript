@@ -24,17 +24,9 @@ static Token makeToken(TokenType type)
 
 #if defined(DEBUG_SCANNER)
 
-    int len = token.length;
-    if (len)
-    {
-        printf("[ ");
-        while (len)
-        {
-            printf("%c", scanner.start[token.length - len]);
-            len--;
-        }
-        printf(" ]\n");
-    }
+    printf("[ ");
+    printf("%2d '%.*s'", token.type, token.length, token.start);
+    printf(" ]\n");
 
 #endif // DEBUG_SCANNER
 
