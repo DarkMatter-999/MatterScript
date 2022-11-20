@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "debug.h"
+
 typedef enum
 {
     // Single Character

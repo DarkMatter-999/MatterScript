@@ -1,9 +1,12 @@
 #include <stdio.h>
-#include "compiler.h"
+#include "vm.h"
+#include "bytecode.h"
 
 static void repl()
 {
     char line[1024];
+    initVM();
+    Chunk chunk;
     while (1)
     {
         printf("> ");
@@ -12,8 +15,11 @@ static void repl()
             printf("\n");
             break;
         }
-        compile(line);
+
+        interpret(&chunk);
     }
+
+    freeVM();
 }
 
 int main(int argc, const char *argv[])

@@ -22,15 +22,22 @@ static Token makeToken(TokenType type)
     token.length = (int)(scanner.current - scanner.start);
     token.line = scanner.line;
 
-    // printf("%s\n");
+#if defined(DEBUG_SCANNER)
+
     int len = token.length;
-    printf("[ ");
-    while (len)
+    if (len)
     {
-        printf("%c", scanner.start[token.length - len]);
-        len--;
+        printf("[ ");
+        while (len)
+        {
+            printf("%c", scanner.start[token.length - len]);
+            len--;
+        }
+        printf(" ]\n");
     }
-    printf(" ]\n");
+
+#endif // DEBUG_SCANNER
+
     return token;
 }
 
@@ -201,6 +208,22 @@ static Token identifier()
     return makeToken(identifierType());
 }
 
+static Token string()
+{
+    while (peek() != '"' && !isAtEnd())
+    {
+        if (peek() == '\n')
+            scanner.line++;
+        next();
+    }
+
+    if (isAtEnd())
+        return errorToken("Unterminated string.");
+
+    next();
+    return makeToken(TOKEN_STRING);
+}
+
 void initScanner(const char *source)
 {
     scanner.start = source;
@@ -254,6 +277,8 @@ Token scanToken()
         return makeToken(match('=') ? TOKEN_LESS_EQUAL : TOKEN_LESS);
     case '>':
         return makeToken(match('=') ? TOKEN_GREATER_EQUAL : TOKEN_GREATER);
+    case '"':
+        return string();
     }
     return errorToken("Unexpected character.");
 }
