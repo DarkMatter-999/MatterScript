@@ -5,6 +5,7 @@
 #include "bytecode.h"
 #include "value.h"
 #include "memory.h"
+#include "hashtable.h"
 
 #define UINT8_COUNT (UINT8_MAX + 1)
 #define FRAMES_MAX 64
@@ -19,6 +20,7 @@ typedef struct
     Value stack[STACK_MAX];
     Value *stackTop;
     Obj *objects;
+    HashTable strings;
 } VM;
 
 typedef enum

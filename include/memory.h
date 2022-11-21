@@ -13,6 +13,10 @@ void *grow_array(int size, void *pointer, int oldCount, int newCount);
 
 void free_array(int size, void *pointer, int oldCount);
 
+void *allocate(int size, int count);
+
+void free_(int size, void *pointer);
+
 void freeObjects();
 
 #define GROW_CAPACITY(capacity) \

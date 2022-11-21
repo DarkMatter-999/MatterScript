@@ -23,8 +23,8 @@ static void freeObject(Obj *object)
     case OBJ_STRING:
     {
         ObjString *string = (ObjString *)object;
-        FREE_ARRAY(char, string->chars, string->length + 1);
-        FREE(ObjString, object);
+        free_array(sizeof(char), string->chars, string->length + 1);
+        free_(sizeof(ObjString), object);
         break;
     }
     }
@@ -54,4 +54,14 @@ void *grow_array(int size, void *pointer, int oldCount, int newCount)
 void free_array(int size, void *pointer, int oldCount)
 {
     reallocate(pointer, size * (oldCount), 0);
+}
+
+void *allocate(int size, int count)
+{
+    return reallocate(NULL, 0, size * (count));
+}
+
+void free_(int size, void *pointer)
+{
+    reallocate(pointer, size, 0);
 }
