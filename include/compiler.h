@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "bytecode.h"
+#include "object.h"
 
 bool compile(const char *source, Chunk *chunk);
 

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "bytecode.h"
 #include "value.h"
+#include "memory.h"
 
 #define UINT8_COUNT (UINT8_MAX + 1)
 #define FRAMES_MAX 64
@@ -17,6 +18,7 @@ typedef struct
     Chunk *chunk;
     Value stack[STACK_MAX];
     Value *stackTop;
+    Obj *objects;
 } VM;
 
 typedef enum
@@ -26,6 +28,8 @@ typedef enum
     INTERPRET_RUNTIME_ERROR
 } InterpretResult;
 
+extern VM vm;
+
 void initVM();
 void freeVM();
 
@@ -34,5 +38,9 @@ void push(Value value);
 Value pop();
 
 static void resetStack();
+static Value peek(int distance);
+static void runtimeError(const char *format, ...);
+static bool isFalsey(Value value);
+static void concatenate();
 
 #endif // VM_H
