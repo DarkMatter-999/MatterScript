@@ -221,6 +221,21 @@ InterpretResult interpret(const char *source)
     vm.chunk = &chunk;
     vm.ip = vm.chunk->code;
 
+#if defined(DEBUG_PRINT_BYTECODE)
+
+    printf("### BYTECODE DUMP ###\n");
+    int idx = 0;
+    while (idx < vm.chunk->capacity)
+    {
+        if (idx && idx % 8 == 0)
+            printf("\n");
+        printf("%02x ", vm.chunk->code[idx]);
+        idx++;
+    }
+    printf("\n######\n");
+
+#endif // DEBUG_PRINT_BYTECODE
+
     InterpretResult result = run();
 
     freeChunk(&chunk);
