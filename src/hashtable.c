@@ -54,9 +54,22 @@ static Entry *findEntry(Entry *entries, int capacity, ObjString *key)
     }
 }
 
+bool tableGet(HashTable *table, ObjString *key, Value *value)
+{
+    if (table->count == 0)
+        return false;
+
+    Entry *entry = findEntry(table->entries, table->capacity, key);
+    if (entry->key == NULL)
+        return false;
+
+    *value = entry->value;
+    return true;
+}
+
 static void adjustCapacity(HashTable *table, int capacity)
 {
-    Entry *entries = allocate(sizeof(Entry), capacity);
+    Entry *entries = (Entry *)allocate(sizeof(Entry), capacity);
     for (int i = 0; i < capacity; i++)
     {
         entries[i].key = NULL;
@@ -86,12 +99,13 @@ bool tableSet(HashTable *table, ObjString *key, Value value)
 {
     if (table->count + 1 > table->capacity * TABLE_MAX_LOAD)
     {
-        int capacity = grow_capacity(table->capacity);
+        int capacity = GROW_CAPACITY(table->capacity);
         adjustCapacity(table, capacity);
     }
 
     Entry *entry = findEntry(table->entries, table->capacity, key);
     bool isNewKey = entry->key == NULL;
+
     if (isNewKey && IS_NIL(entry->value))
         table->count++;
 

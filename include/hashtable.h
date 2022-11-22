@@ -21,8 +21,9 @@ void initTable(HashTable *table);
 void freeTable(HashTable *table);
 
 bool tableSet(HashTable *table, ObjString *key, Value value);
-bool tableDelete(HashTable *table, ObjString *key);
+bool tableGet(HashTable *table, ObjString *key, Value *value);
 void tableAddAll(HashTable *from, HashTable *to);
 ObjString *tableFindString(HashTable *table, const char *chars, int length, uint32_t hash);
+bool tableDelete(HashTable *table, ObjString *key);
 
 #endif // HASHTABLE_H
