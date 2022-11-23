@@ -99,7 +99,7 @@ bool tableSet(HashTable *table, ObjString *key, Value value)
 {
     if (table->count + 1 > table->capacity * TABLE_MAX_LOAD)
     {
-        int capacity = GROW_CAPACITY(table->capacity);
+        int capacity = grow_capacity(table->capacity);
         adjustCapacity(table, capacity);
     }
 

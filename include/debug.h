@@ -4,13 +4,13 @@
 #include "value.h"
 #include "bytecode.h"
 
-#define DEBUG_SCANNER
+// #define DEBUG_SCANNER
 
 // #define DEBUG_PRINT_CODE
 
-#define DEBUG_TRACE_EXECUTION
+// #define DEBUG_TRACE_EXECUTION
 
-// #define DEBUG_PRINT_BYTECODE
+#define DEBUG_PRINT_BYTECODE
 
 void disassembleChunk(Chunk *chunk, const char *name);
 int disassembleInstruction(Chunk *chunk, int offset);

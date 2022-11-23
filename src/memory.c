@@ -24,9 +24,12 @@ static void freeObject(Obj *object)
     {
         ObjFunction *function = (ObjFunction *)object;
         freeChunk(&function->chunk);
-        FREE(ObjFunction, object);
+        free_(sizeof(ObjFunction), object);
         break;
     }
+    case OBJ_NATIVE:
+        free_(sizeof(ObjNative), object);
+        break;
     case OBJ_STRING:
     {
         ObjString *string = (ObjString *)object;

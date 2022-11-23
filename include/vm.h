@@ -55,5 +55,6 @@ static void concatenate();
 
 static bool call(ObjFunction *function, int argCount);
 static bool callValue(Value callee, int argCount);
+static void defineNative(const char *name, NativeFn function);
 
 #endif // VM_H
