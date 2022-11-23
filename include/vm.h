@@ -5,18 +5,25 @@
 #include "bytecode.h"
 #include "value.h"
 #include "memory.h"
+#include "object.h"
 #include "hashtable.h"
 
 #define UINT8_COUNT (UINT8_MAX + 1)
 #define FRAMES_MAX 64
-#define STACK_MAX 256
-
-// (FRAMES_MAX * UINT8_COUNT)
+#define STACK_MAX (FRAMES_MAX * UINT8_COUNT)
 
 typedef struct
 {
+    ObjFunction *function;
     uint8_t *ip;
-    Chunk *chunk;
+    Value *slots;
+} CallFrame;
+
+typedef struct
+{
+    CallFrame frames[FRAMES_MAX];
+    int frameCount;
+
     Value stack[STACK_MAX];
     Value *stackTop;
     Obj *objects;
@@ -45,5 +52,8 @@ static Value peek(int distance);
 static void runtimeError(const char *format, ...);
 static bool isFalsey(Value value);
 static void concatenate();
+
+static bool call(ObjFunction *function, int argCount);
+static bool callValue(Value callee, int argCount);
 
 #endif // VM_H
