@@ -14,7 +14,7 @@
 
 typedef struct
 {
-    ObjFunction *function;
+    ObjClosure *closure;
     uint8_t *ip;
     Value *slots;
 } CallFrame;
@@ -28,6 +28,7 @@ typedef struct
     Value *stackTop;
     Obj *objects;
     HashTable strings;
+    ObjUpvalue *openUpvalues;
     HashTable globals;
 } VM;
 
@@ -53,8 +54,11 @@ static void runtimeError(const char *format, ...);
 static bool isFalsey(Value value);
 static void concatenate();
 
-static bool call(ObjFunction *function, int argCount);
+static bool call(ObjClosure *closure, int argCount);
 static bool callValue(Value callee, int argCount);
 static void defineNative(const char *name, NativeFn function);
+
+static ObjUpvalue *captureUpvalue(Value *local);
+static void closeUpvalues(Value *last);
 
 #endif // VM_H
