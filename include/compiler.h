@@ -7,4 +7,6 @@
 
 ObjFunction *compile(const char *source);
 
+void markCompilerRoots();
+
 #endif // COMPILER_H

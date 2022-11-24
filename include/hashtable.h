@@ -26,4 +26,7 @@ void tableAddAll(HashTable *from, HashTable *to);
 ObjString *tableFindString(HashTable *table, const char *chars, int length, uint32_t hash);
 bool tableDelete(HashTable *table, ObjString *key);
 
+void markTable(HashTable *table);
+void tableRemoveWhite(HashTable *table);
+
 #endif // HASHTABLE_H

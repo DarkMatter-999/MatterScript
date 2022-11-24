@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include "object.h"
 
+#define GC_HEAP_GROW_FACTOR 2
+
 void *reallocate(void *pointer, size_t oldSize, size_t newSize);
 
 int grow_capacity(int capacity);
@@ -18,6 +20,10 @@ void *allocate(int size, int count);
 void free_(int size, void *pointer);
 
 void freeObjects();
+
+void collectGarbage();
+void markValue(Value value);
+void markObject(Obj *object);
 
 #define GROW_CAPACITY(capacity) \
     ((capacity) < 8 ? 8 : (capacity)*2)

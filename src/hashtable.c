@@ -168,3 +168,25 @@ ObjString *tableFindString(HashTable *table, const char *chars, int length, uint
         index = (index + 1) % table->capacity;
     }
 }
+
+void markTable(HashTable *table)
+{
+    for (int i = 0; i < table->capacity; i++)
+    {
+        Entry *entry = &table->entries[i];
+        markObject((Obj *)entry->key);
+        markValue(entry->value);
+    }
+}
+
+void tableRemoveWhite(HashTable *table)
+{
+    for (int i = 0; i < table->capacity; i++)
+    {
+        Entry *entry = &table->entries[i];
+        if (entry->key != NULL && !entry->key->obj.isMarked)
+        {
+            tableDelete(table, entry->key);
+        }
+    }
+}
