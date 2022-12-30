@@ -73,5 +73,6 @@ static void closeUpvalues(Value *last);
 static bool bindMethod(ObjClass *klass, ObjString *name);
 static bool invoke(ObjString *name, int argCount);
 static void defineMethod(ObjString *name);
+static bool invokeFromClass(ObjClass *klass, ObjString *name, int argCount);
 
 #endif // VM_H

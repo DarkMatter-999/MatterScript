@@ -254,6 +254,8 @@ Token scanToken()
         return makeToken(TOKEN_RIGHT_BRACE);
     case ';':
         return makeToken(TOKEN_SEMICOLON);
+    case ':':
+        return makeToken(TOKEN_COLON);
     case ',':
         return makeToken(TOKEN_COMMA);
     case '.':
