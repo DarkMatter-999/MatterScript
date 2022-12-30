@@ -90,6 +90,24 @@ bool valuesEqual(Value a, Value b)
     case VAL_NUMBER:
         return AS_NUMBER(a) == AS_NUMBER(b);
     case VAL_OBJ:
+        if (IS_LIST(a) && IS_LIST(b))
+        {
+            ObjList *al = AS_LIST(a);
+            ObjList *bl = AS_LIST(b);
+            if (al->count != bl->count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < al->count; i++)
+            {
+                if (!valuesEqual(al->items[i], bl->items[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         return AS_OBJ(a) == AS_OBJ(b);
     default:
         return false; // Unreachable.

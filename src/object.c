@@ -183,3 +183,70 @@ ObjString *takeString(char *chars, int length)
 
     return allocateString(chars, length, hash);
 }
+
+ObjList *newList()
+{
+    ObjList *list = ALLOCATE_OBJ(ObjList, OBJ_LIST);
+    list->items = NULL;
+    list->count = 0;
+    list->capacity = 0;
+    return list;
+}
+
+void appendToList(ObjList *list, Value value)
+{
+    // Grow the array if necessary
+    if (list->capacity < list->count + 1)
+    {
+        int oldCapacity = list->capacity;
+        list->capacity = grow_capacity(oldCapacity);
+        list->items = (Value *)grow_array(sizeof(Value), list->items, oldCapacity, list->capacity);
+    }
+    list->items[list->count] = value;
+    list->count++;
+    return;
+}
+
+void storeToList(ObjList *list, int index, Value value)
+{
+    list->items[index] = value;
+}
+
+Value indexFromList(ObjList *list, int index)
+{
+    return list->items[index];
+}
+
+Value indexFromString(ObjString *string, int index)
+{
+    ObjString *newString = copyString((char *)(string->chars + index), 1);
+    return OBJ_VAL(newString);
+}
+
+void deleteFromList(ObjList *list, int index)
+{
+    for (int i = index; i < list->count - 1; i++)
+    {
+        list->items[i] = list->items[i + 1];
+    }
+    list->items[list->count - 1] = NIL_VAL;
+    list->count--;
+}
+
+bool isValidListIndex(ObjList *list, int index)
+{
+    if (index < 0 || index > list->count - 1)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool isValidStringIndex(ObjString *string, int index)
+{
+    if (index < 0 || index > string->length - 1)
+    {
+        return false;
+    }
+    return true;
+}

@@ -376,6 +376,103 @@ static InterpretResult run()
             frame = &vm.frames[vm.frameCount - 1];
             break;
         }
+        case OP_BUILD_LIST:
+        {
+            // Stack before: [item1, item2, ..., itemN] and after: [list]
+            ObjList *list = newList();
+            uint8_t itemCount = READ_BYTE();
+
+            // Add items to list
+            push(OBJ_VAL(list)); // So list isn't sweeped by GC in appendToList
+            for (int i = itemCount; i > 0; i--)
+            {
+                appendToList(list, peek(i));
+            }
+            pop();
+
+            // Pop items from stack
+            while (itemCount-- > 0)
+            {
+                pop();
+            }
+
+            push(OBJ_VAL(list));
+            break;
+        }
+        case OP_INDEX:
+        {
+            Value index = pop();
+            Value indexable = pop();
+            Value result;
+            if (IS_LIST(indexable))
+            {
+                ObjList *list = AS_LIST(indexable);
+                if (!IS_NUMBER(index))
+                {
+                    runtimeError("List index is not a number.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                else if (!isValidListIndex(list, AS_NUMBER(index)))
+                {
+                    runtimeError("List index out of range.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                result = indexFromList(list, AS_NUMBER(index));
+            }
+            else if (IS_STRING(indexable))
+            {
+                ObjString *string = AS_STRING(indexable);
+                if (!IS_NUMBER(index))
+                {
+                    runtimeError("String index is not a number.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                else if (!isValidStringIndex(string, AS_NUMBER(index)))
+                {
+                    runtimeError("String index out of range.");
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                result = indexFromString(string, AS_NUMBER(index));
+            }
+            else
+            {
+                runtimeError("Invalid type to index into.");
+                return INTERPRET_RUNTIME_ERROR;
+            }
+            push(result);
+            break;
+        }
+        case OP_STORE:
+        {
+            // Stack before: [list, index, item] and after: [item]
+            Value item = pop();
+            Value index_ = pop();
+            Value list_ = pop();
+
+            if (!IS_LIST(list_))
+            {
+                runtimeError("Cannot store value in a non-list.");
+                return INTERPRET_RUNTIME_ERROR;
+            }
+            ObjList *list = AS_LIST(list_);
+
+            if (!IS_NUMBER(index_))
+            {
+                runtimeError("List index is not a number.");
+                return INTERPRET_RUNTIME_ERROR;
+            }
+            int index = AS_NUMBER(index_);
+
+            if (!isValidListIndex(list, index))
+            {
+                runtimeError("Invalid list index.");
+                return INTERPRET_RUNTIME_ERROR;
+            }
+
+            storeToList(list, index, item);
+            push(item);
+            break;
+        }
         }
     }
 
@@ -558,6 +655,39 @@ static bool bindMethod(ObjClass *klass, ObjString *name)
     pop();
     push(OBJ_VAL(bound));
     return true;
+}
+
+static Value appendNative(int argCount, Value *args)
+{
+    // Append a value to the end of a list increasing the list's length by 1
+    if (argCount != 2 || !IS_LIST(args[0]))
+    {
+        // Handle error
+    }
+    ObjList *list = AS_LIST(args[0]);
+    Value item = args[1];
+    appendToList(list, item);
+    return NIL_VAL;
+}
+
+static Value deleteNative(int argCount, Value *args)
+{
+    // Delete an item from a list at the given index.
+    if (argCount != 2 || !IS_LIST(args[0]) || !IS_NUMBER(args[1]))
+    {
+        // Handle error
+    }
+
+    ObjList *list = AS_LIST(args[0]);
+    int index = AS_NUMBER(args[1]);
+
+    if (!isValidListIndex(list, index))
+    {
+        // Handle error
+    }
+
+    deleteFromList(list, index);
+    return NIL_VAL;
 }
 
 static ObjUpvalue *captureUpvalue(Value *local)

@@ -1,7 +1,7 @@
 #if !defined(VALUE_H)
 #define VALUE_H
 
-#define NAN_BOXING
+// #define NAN_BOXING
 
 #include <stdbool.h>
 

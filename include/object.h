@@ -8,6 +8,7 @@
 
 #define OBJ_TYPE(value) (AS_OBJ(value)->type)
 #define IS_BOUND_METHOD(value) isObjType(value, OBJ_BOUND_METHOD)
+#define IS_LIST(value) isObjType(value, OBJ_LIST)
 #define IS_CLASS(value) isObjType(value, OBJ_CLASS)
 #define IS_CLOSURE(value) isObjType(value, OBJ_CLOSURE)
 #define IS_FUNCTION(value) isObjType(value, OBJ_FUNCTION)
@@ -16,6 +17,7 @@
 #define IS_STRING(value) isObjType(value, OBJ_STRING)
 
 #define AS_BOUND_METHOD(value) ((ObjBoundMethod *)AS_OBJ(value))
+#define AS_LIST(value) ((ObjList *)AS_OBJ(value))
 #define AS_CLASS(value) ((ObjClass *)AS_OBJ(value))
 #define AS_CLOSURE(value) ((ObjClosure *)AS_OBJ(value))
 #define AS_FUNCTION(value) ((ObjFunction *)AS_OBJ(value))
@@ -32,6 +34,7 @@ typedef enum
     OBJ_CLOSURE,
     OBJ_FUNCTION,
     OBJ_INSTANCE,
+    OBJ_LIST,
     OBJ_NATIVE,
     OBJ_STRING,
     OBJ_UPVALUE
@@ -106,6 +109,14 @@ typedef struct
     ObjClosure *method;
 } ObjBoundMethod;
 
+typedef struct
+{
+    Obj obj;
+    int count;
+    int capacity;
+    Value *items;
+} ObjList;
+
 ObjBoundMethod *newBoundMethod(Value receiver, ObjClosure *method);
 
 ObjClass *newClass(ObjString *name);
@@ -125,6 +136,15 @@ ObjUpvalue *newUpvalue(Value *slot);
 void printObject(Value value);
 ObjString *takeString(char *chars, int length);
 static ObjString *allocateString(char *chars, int length, uint32_t hash);
+
+ObjList *newList();
+void appendToList(ObjList *list, Value value);
+void storeToList(ObjList *list, int index, Value value);
+Value indexFromList(ObjList *list, int index);
+Value indexFromString(ObjString *string, int index);
+void deleteFromList(ObjList *list, int index);
+bool isValidListIndex(ObjList *list, int index);
+bool isValidStringIndex(ObjString *string, int index);
 
 static inline bool isObjType(Value value, ObjType type)
 {

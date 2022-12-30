@@ -75,4 +75,7 @@ static bool invoke(ObjString *name, int argCount);
 static void defineMethod(ObjString *name);
 static bool invokeFromClass(ObjClass *klass, ObjString *name, int argCount);
 
+static Value appendNative(int argCount, Value *args);
+static Value deleteNative(int argCount, Value *args);
+
 #endif // VM_H

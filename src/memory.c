@@ -41,6 +41,13 @@ static void freeObject(Obj *object)
 
     switch (object->type)
     {
+    case OBJ_LIST:
+    {
+        ObjList *list = (ObjList *)object;
+        free_array(sizeof(Value *), list->items, list->count);
+        free_(sizeof(ObjList), object);
+        break;
+    }
     case OBJ_BOUND_METHOD:
         free_(sizeof(ObjBoundMethod), object);
         break;
@@ -125,6 +132,15 @@ static void blackenObject(Obj *object)
 
     switch (object->type)
     {
+    case OBJ_LIST:
+    {
+        ObjList *list = (ObjList *)object;
+        for (int i = 0; i < list->count; i++)
+        {
+            markValue(list->items[i]);
+        }
+        break;
+    }
     case OBJ_BOUND_METHOD:
     {
         ObjBoundMethod *bound = (ObjBoundMethod *)object;
