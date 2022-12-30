@@ -48,6 +48,14 @@ ObjFunction *newFunction()
     return function;
 }
 
+ObjInstance *newInstance(ObjClass *klass)
+{
+    ObjInstance *instance = ALLOCATE_OBJ(ObjInstance, OBJ_INSTANCE);
+    instance->klass = klass;
+    initTable(&instance->fields);
+    return instance;
+}
+
 ObjNative *newNative(NativeFn function)
 {
     ObjNative *native = ALLOCATE_OBJ(ObjNative, OBJ_NATIVE);
@@ -92,11 +100,18 @@ void printObject(Value value)
 {
     switch (OBJ_TYPE(value))
     {
+    case OBJ_CLASS:
+        printf("%s", AS_CLASS(value)->name->chars);
+        break;
     case OBJ_CLOSURE:
         printFunction(AS_CLOSURE(value)->function);
         break;
     case OBJ_FUNCTION:
         printFunction(AS_FUNCTION(value));
+        break;
+    case OBJ_INSTANCE:
+        printf("%s instance",
+               AS_INSTANCE(value)->klass->name->chars);
         break;
     case OBJ_STRING:
         printf("%s", AS_CSTRING(value));
@@ -119,6 +134,13 @@ static ObjString *allocateString(char *chars, int length, uint32_t hash)
     pop();
 
     return string;
+}
+
+ObjClass *newClass(ObjString *name)
+{
+    ObjClass *klass = ALLOCATE_OBJ(ObjClass, OBJ_CLASS);
+    klass->name = name;
+    return klass;
 }
 
 ObjClosure *newClosure(ObjFunction *function)
