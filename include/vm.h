@@ -28,6 +28,7 @@ typedef struct
     Value *stackTop;
     Obj *objects;
     HashTable strings;
+    ObjString *initString;
     ObjUpvalue *openUpvalues;
     HashTable globals;
 
@@ -68,5 +69,9 @@ static void defineNative(const char *name, NativeFn function);
 
 static ObjUpvalue *captureUpvalue(Value *local);
 static void closeUpvalues(Value *last);
+
+static bool bindMethod(ObjClass *klass, ObjString *name);
+static bool invoke(ObjString *name, int argCount);
+static void defineMethod(ObjString *name);
 
 #endif // VM_H
